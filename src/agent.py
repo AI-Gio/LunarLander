@@ -26,9 +26,7 @@ class Agent:
 
     def do_action(self):
         """
-            Lets the agent do an action within the grid. Decides the best direction with
-            the policy, then uses that direction to make a step within the maze. Updates on
-            each step if the agent is on the end state or not.
+            Lets the agent do an action within the sim
         """
 
 
