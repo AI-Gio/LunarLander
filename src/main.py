@@ -8,13 +8,13 @@ agent = agent.Agent()
 
 for i_episode in range(20):
     current_state = env.reset()
-    for step in range(100):
+    for step in range(1000):
         env.render()
 
 
         print(current_state)
         # TODO:  select_action
-        action = agent.select_action(current_state) #env.action_space.sample()
+        action = agent.choose_action(current_state, 0.1) #env.action_space.sample()
         next_state, reward, done, info = env.step(action) # next_state is observation
 
         # Save transition in memory of agent

@@ -12,6 +12,7 @@ class FunctionApprox:
         # Add layers
         self.model.add(keras.layer.Dense(32, name="1"))
         self.model.add(keras.layer.Dense(32, name="2"))
+        self.model.add(keras.layer.Dense(4, name="Output"))
 
         # Make Adam Optimizer
         adam = keras.optimizers.Adam(learning_rate=0.001, name="Adam")
@@ -29,6 +30,8 @@ class FunctionApprox:
         preds = []
         for state in states:
             preds.append(self.model.predict(state))
+        if len(preds) < 2:
+            return preds[0]
         return preds
 
     def save_network(self):
