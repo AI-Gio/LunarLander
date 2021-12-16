@@ -6,10 +6,9 @@ class FunctionApprox:
         # Create model
         self.model = tf.keras.Sequential()
 
-        # Input layer
-        self.model.add(tf.keras.Input(8,))
 
         # Add layers
+        self.model.add(tf.keras.layers.Dense(8,))
         self.model.add(tf.keras.layers.Dense(32, name="1"))
         self.model.add(tf.keras.layers.Dense(32, name="2"))
         self.model.add(tf.keras.layers.Dense(4, name="Output"))
@@ -27,11 +26,15 @@ class FunctionApprox:
         :param states:
         :return: np.array() of predictions
         """
-        preds = []
-        for state in states:
-            preds.append(self.model.predict(state))
-        if len(preds) < 2:
-            return preds[0]
+        # print(states)
+        # print(np.array([np.array(states)]))
+        preds = self.model.predict(np.array([np.array(states)]))[0]
+
+        # for state in states:
+        #     print(state)
+        #     preds.append(self.model.predict(state))
+        # if len(preds) < 2:
+        #     return preds[0]
         return preds
 
     def save_network(self):
