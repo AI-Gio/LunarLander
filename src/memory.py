@@ -7,8 +7,12 @@ class Memory:
     def __init__(self):
         self.size = int
         self.mem = deque([])
+        # sample size (batchsize) 64 of 32
+        # memory van zo een 5000
+        # bij record: als de memory vol zit, oudste eruit
+        # hoge learning rate bij hoge batchsize
 
-    def sample(self, batch_size: int):
+    def sample(self, batch_size: int) -> list:
         """
         Picks random transitions out of mem list
         :return: list of samples of transitions
