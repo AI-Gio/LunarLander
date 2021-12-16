@@ -1,22 +1,22 @@
-from tensorflow import keras
-
+import tensorflow as tf
+import numpy as np
 
 class FunctionApprox:
     def __init__(self):
         # Create model
-        self.model = keras.Sequential()
+        self.model = tf.keras.Sequential()
 
         # Input layer
-        self.model.add(keras.Input(8,))
+        self.model.add(tf.keras.Input(8,))
 
         # Add layers
-        self.model.add(keras.layer.Dense(32, name="1"))
-        self.model.add(keras.layer.Dense(32, name="2"))
-        self.model.add(keras.layer.Dense(4, name="Output"))
+        self.model.add(tf.keras.layers.Dense(32, name="1"))
+        self.model.add(tf.keras.layers.Dense(32, name="2"))
+        self.model.add(tf.keras.layers.Dense(4, name="Output"))
 
         # Make Adam Optimizer
-        adam = keras.optimizers.Adam(learning_rate=0.001, name="Adam")
-        loss = keras.optimizers.RMSprop(learning_rate=0.001, name="RMSprop")
+        adam = tf.keras.optimizers.Adam(learning_rate=0.001, name="Adam")
+        loss = tf.keras.optimizers.RMSprop(learning_rate=0.001, name="mean_squared_error")
 
         # Compile model
         self.model.compile(optimizer=adam, loss=loss)
@@ -44,9 +44,9 @@ class FunctionApprox:
         """
         Load model
         """
-        keras.load_model("CurrentModel.h5")
+        tf.keras.load_model("CurrentModel.h5")
 
-    def train(self, x, y, batch_size, epochs: int, verbose: bool, validation_split: float, shuffle: bool):
+    def train(self, x, y, batch_size, epochs: int, verbose: bool):
         """
         Train the model with the given params
         :param x: set with train data
@@ -57,28 +57,26 @@ class FunctionApprox:
         :param validation_split: how much of the data will be kept on the side to test trained model later on
         :param shuffle: shuffle data
         """
-        self.model.fit(x=x,y=y, batch_size=batch_size, epochs=epochs, verbose=verbose,
-                       validation_split=validation_split, shuffle=shuffle)
+        self.model.fit(x=x,y=y, batch_size=batch_size, epochs=epochs, verbose=verbose)
 
-    def set_weights(self, l_w: list, layer: int):
+    def set_weights(self, weights: np.array):
         """
         Set the weights of the model
-        :param l_w: list with weights (length must correspond to same amount of neurons in the layer)
+        :param weights: all weights of model
         :param layer: integer that corresponds to what layer in the model the weights should be changed
         """
-        layers = self.model.layer
-        for l in layers:
-            if int(l.name) == layer:
-                self.model.set_weights(l_w)
+        layers = self.model.layers
+        for i, lw in enumerate(layers):
+            self.model.lw.set_weights(weights[i])
 
     def get_weights(self):
         """
         Get weigths from layers in model
-        :return: 2d list with np.arrays
+        :return: 2d np.array with np.arrays
         """
-        layers = []
+        layers = np.array([])
         for layer in self.model.layers:
-            layers.append(layer.get_weights())
+            np.append(layers, layer.get_weights())
         return layers
 
 
