@@ -12,11 +12,11 @@ class Agent:
     def __init__(self):
         # policy_network = approximator()
         # target_network = approximator()
-        pass
+        self.memory = Memory()
+
 
     def train(self, batch_size):
-
-        batch = memory.sample(batch_size) # TODO: moet nog een memory instance aangemaakt worden
+        batch = self.memory.sample(batch_size) # TODO: moet nog een memory instance aangemaakt worden
         for sample in batch:
             next_state = sample.next_state
             best_action = Policy.select_action(next_state)

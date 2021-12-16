@@ -2,8 +2,8 @@ from dataclasses import dataclass
 
 @dataclass
 class Transition:
-    state: State
+    state: list
     action: float
     reward: float
-    next_state= State
-    done = bool
+    next_state: list
+    done: bool
