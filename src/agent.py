@@ -3,6 +3,7 @@ from dataclasses import dataclass
 import numpy as np
 import copy
 from collections import namedtuple
+from memory import Memory
 
 class Agent:
     """
@@ -15,7 +16,7 @@ class Agent:
 
     def train(self, batch_size):
 
-        batch = memory.sample(batch_size)
+        batch = memory.sample(batch_size) # TODO: moet nog een memory instance aangemaakt worden
         for sample in batch:
             next_state = sample.next_state
             best_action = Policy.select_action(next_state)
