@@ -11,7 +11,7 @@ class Epsilon_policy:
         """Select an action through the given neural network"""
 
         if random.random() > epsilon:
-            action_values = network.q_values(state)
-            best_action_value = max(action_values)
-            return action_values.index(best_action_value)
+            Q_values = network.q_values(state)
+            best_q_value = max(Q_values)
+            return Q_values.index(best_q_value)
         return random.choice(self.actions)
