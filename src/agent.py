@@ -68,7 +68,6 @@ class Agent:
 
 
 
-
             # q-values = target_model(next_state)
             # Q[next_state, best_action] = q-value van best_action
             # target = next_state.reward + self.discount * Q[next_state, best_action]
