@@ -22,7 +22,6 @@ def main(n_epi: int, steps: int, n_train: int, n_update: int):
         for step in range(steps):
             print(count)
             env.render()
-            # print(f"curr_state = {current_state}")
 
             # Train policy network
             if count % n_train == 0:

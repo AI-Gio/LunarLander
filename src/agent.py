@@ -10,7 +10,7 @@ from EpsilonPolicy import Epsilon_policy
 
 class Agent:
     """
-    Desc agent
+    Agent does cool stuff
     """
     def __init__(self, discount, epsilon, tau, batch_size, epochs, memory_size, learning_rate):
         self.discount = discount
