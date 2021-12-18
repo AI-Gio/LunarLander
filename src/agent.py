@@ -14,17 +14,20 @@ class Agent:
     """
     def __init__(self, discount, epsilon, tau, batch_size, epochs, memory_size, learning_rate):
         self.discount = discount
+        self.epsilon = epsilon
+        self.tau = tau
+        self.batch_size = batch_size
+        self.epochs = epochs
+        self.learning_rate = learning_rate
         self.policy_network = FunctionApprox()
         self.target_network = FunctionApprox()
-        self.pol = Epsilon_policy([0,1,2,3])
-        self.memory = Memory(1000)
-
+        self.pol = Epsilon_policy([0, 1, 2, 3])
+        self.memory = Memory(memory_size)
 
     def train(self):
         """
         This train function has to calculate y first and then give params
         to function_approx.train()
-        :param batch_size:
         :return:
         """
 
@@ -35,7 +38,10 @@ class Agent:
             state = x = transition.state
             next_state = transition.next_state
 
-            q_val_next_state = self.policy_network.q_values(next_state)
+            if transition.done:
+                q_val_next_state = self.policy_network.q_values(next_state)
+            else:
+                q_val_next_state = [0, 0, 0, 0]
 
             argmax_index = np.argmax(q_val_next_state)
             target = transition.reward + self.discount * self.target_network.q_values(next_state)[argmax_index]
@@ -61,11 +67,11 @@ class Agent:
 
         self.target_network.set_weights(self.tau * w_policy + (1 - self.tau) * w_target)
 
-    def choose_action(self, state, epsilon):
+    def choose_action(self, state):
         """
             Lets the agent do an action within the sim
         """
-        best_action_index = self.pol.select_action(self.policy_network, epsilon, state)
+        best_action_index = self.pol.select_action(self.policy_network, self.epsilon, state)
         return best_action_index
 
 
