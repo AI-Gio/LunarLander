@@ -40,13 +40,16 @@ class Agent:
             argmax_index = np.argmax(q_val_next_state)
             target = transition.reward + self.discount * self.target_network.q_values(next_state)[argmax_index]
 
-            y = self.policy_network.q_values(state) # this is q_values current state
+            y = self.policy_network.q_values(state)  # this is q_values current state
             y[transition.action] = target
 
-            X.append(x)
-            Y.append(y)
+            X.append(np.array(x))
+            Y.append(np.array(y))
 
-        self.policy_network.train(X, Y, batch_size, epochs, True)
+        X = np.array(X)
+        Y = np.array(Y)
+
+        self.policy_network.train(X, Y, batch_size, epochs, True)  # TODO: wrong input fixed
 
     def update_t_network(self, tau: float):
         """
