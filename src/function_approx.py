@@ -21,19 +21,11 @@ class FunctionApprox:
 
     def q_values(self, states: list):
         """
-        Feeds list of states in model to predict
+        Feeds list of states in model to predict.
         :param states:
         :return: np.array() of predictions
         """
-        # print(states)
-        # print(np.array([np.array(states)]))
         preds = self.model.predict(np.array([np.array(states)]))[0]
-
-        # for state in states:
-        #     print(state)
-        #     preds.append(self.model.predict(state))
-        # if len(preds) < 2:
-        #     return preds[0]
         return preds
 
     def save_network(self, filename):
