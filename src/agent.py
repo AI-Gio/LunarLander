@@ -12,7 +12,7 @@ class Agent:
     """
     Desc agent
     """
-    def __init__(self, discount):
+    def __init__(self, discount, epsilon, tau, batch_size, epochs, memory_size, learning_rate):
         self.discount = discount
         self.policy_network = FunctionApprox()
         self.target_network = FunctionApprox()
@@ -20,7 +20,7 @@ class Agent:
         self.memory = Memory(1000)
 
 
-    def train(self, batch_size, epochs):
+    def train(self):
         """
         This train function has to calculate y first and then give params
         to function_approx.train()
@@ -28,7 +28,7 @@ class Agent:
         :return:
         """
 
-        batch = self.memory.sample(batch_size) # lijst aan transitions
+        batch = self.memory.sample(self.batch_size) # lijst aan transitions
         X = []
         Y = []
         for transition in batch:
@@ -49,9 +49,9 @@ class Agent:
         X = np.array(X)
         Y = np.array(Y)
 
-        self.policy_network.train(X, Y, batch_size, epochs, True)  # TODO: wrong input fixed
+        self.policy_network.train(X, Y, self.batch_size, self.epochs, True)  # TODO: wrong input fixed
 
-    def update_t_network(self, tau: float):
+    def update_t_network(self):
         """
         Update target network
         :return:
@@ -59,11 +59,7 @@ class Agent:
         w_policy = self.policy_network.get_weights()
         w_target = self.target_network.get_weights()
 
-        self.target_network.set_weights(tau * w_policy + (1 - tau) * w_target)
-
-            # q-values = target_model(next_state)
-            # Q[next_state, best_action] = q-value van best_action
-            # target = next_state.reward + self.discount * Q[next_state, best_action]
+        self.target_network.set_weights(self.tau * w_policy + (1 - self.tau) * w_target)
 
     def choose_action(self, state, epsilon):
         """

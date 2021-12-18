@@ -6,7 +6,6 @@ class FunctionApprox:
         # Create model
         self.model = tf.keras.Sequential()
 
-
         # Add layers
         self.model.add(tf.keras.layers.Dense(8,))
         self.model.add(tf.keras.layers.Dense(32, name="1"))
@@ -37,17 +36,17 @@ class FunctionApprox:
         #     return preds[0]
         return preds
 
-    def save_network(self):
+    def save_network(self, filename):
         """
         Save model
         """
-        self.model.save("CurrentModel.h5")
+        self.model.save(f"{filename}.h5")
 
-    def load_network(self):
+    def load_network(self, filename):
         """
-        Load model
+        Load model by overwriting current trained model with keras.model object
         """
-        tf.keras.load_model("CurrentModel.h5")
+        self.model = tf.keras.load_model(f"{filename}.h5")
 
     def train(self, x, y, batch_size, epochs: int, verbose: bool):
         """
@@ -57,8 +56,6 @@ class FunctionApprox:
         :param batch_size: how much of the data should be used to train on
         :param epochs: how many epochs the model runs
         :param verbose: show training progress or not
-        :param validation_split: how much of the data will be kept on the side to test trained model later on
-        :param shuffle: shuffle data
         """
         self.model.fit(x=x,y=y, batch_size=batch_size, epochs=epochs, verbose=verbose) # TODO: gebeurt nog iets raars met epochs dat hij er maar 1tje pakt
 
@@ -70,8 +67,7 @@ class FunctionApprox:
         """
         layers = self.model.layers
         for i, lw in enumerate(layers):
-            print(lw)
-            layers.lw.set_weights(weights[i])
+            lw.set_weights(weights[i])
 
     def get_weights(self):
         """
