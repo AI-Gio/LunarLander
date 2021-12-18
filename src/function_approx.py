@@ -15,7 +15,7 @@ class FunctionApprox:
 
         # Make Adam Optimizer
         adam = tf.keras.optimizers.Adam(learning_rate=0.001, name="Adam")
-        loss = tf.keras.optimizers.RMSprop(learning_rate=0.001, name="mean_squared_error")
+        loss = tf.keras.losses.MeanSquaredError(name="mean_squared_error")  # TODO: fixed problem optimizer to loss
 
         # Compile model
         self.model.compile(optimizer=adam, loss=loss)
@@ -60,7 +60,7 @@ class FunctionApprox:
         :param validation_split: how much of the data will be kept on the side to test trained model later on
         :param shuffle: shuffle data
         """
-        self.model.fit(x=x,y=y, batch_size=batch_size, epochs=epochs, verbose=verbose)
+        self.model.fit(x=x,y=y, batch_size=batch_size, epochs=epochs, verbose=verbose) # TODO: gebeurt nog iets raars met epochs dat hij er maar 1tje pakt
 
     def set_weights(self, weights: np.array):
         """
@@ -70,17 +70,18 @@ class FunctionApprox:
         """
         layers = self.model.layers
         for i, lw in enumerate(layers):
-            self.model.lw.set_weights(weights[i])
+            print(lw)
+            layers.lw.set_weights(weights[i])
 
     def get_weights(self):
         """
         Get weigths from layers in model
         :return: 2d np.array with np.arrays
         """
-        layers = np.array([])
+        layers = []
         for layer in self.model.layers:
-            np.append(layers, layer.get_weights())
-        return layers
+            layers.append(layer.get_weights())
+        return np.array(layers)  # TODO wrong shape error fixed
 
 
 

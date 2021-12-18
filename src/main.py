@@ -25,7 +25,7 @@ def main(n_epi: int, batch_size, loop_timer:int):
             # Train policy network
             if count % loop_timer:
                 agent.train(batch_size, 20)
-                agent.update_t_network(0.1) # TODO: kan nog iets minder vak dan elke train
+                agent.update_t_network(0.1)  # TODO: kan nog iets minder vak dan elke train
 
             # Select_action using policy network in agent.py
             action = agent.choose_action(current_state, 0.1) #env.action_space.sample()
