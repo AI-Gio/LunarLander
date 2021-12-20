@@ -1,8 +1,4 @@
-import random
-from dataclasses import dataclass
 import numpy as np
-import copy
-from collections import namedtuple
 from memory import Memory
 from function_approx import FunctionApprox
 from EpsilonPolicy import Epsilon_policy
@@ -39,9 +35,9 @@ class Agent:
             next_state = transition.next_state
 
             if transition.done:
-                q_val_next_state = self.policy_network.q_values(next_state)
-            else:
                 q_val_next_state = [0, 0, 0, 0]
+            else:
+                q_val_next_state = self.policy_network.q_values(next_state)
 
             argmax_index = np.argmax(q_val_next_state)
             target = transition.reward + self.discount * self.target_network.q_values(next_state)[argmax_index]

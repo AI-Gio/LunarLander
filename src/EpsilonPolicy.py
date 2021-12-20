@@ -1,6 +1,6 @@
 import random
 from function_approx import FunctionApprox
-
+random.seed(7)
 
 class Epsilon_policy:
     """The epsilon soft policy of the agent."""

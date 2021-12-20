@@ -1,6 +1,7 @@
 import random
 from collections import deque
 import transition
+random.seed(7)
 
 class Memory:
 

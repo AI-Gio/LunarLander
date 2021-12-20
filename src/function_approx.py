@@ -1,15 +1,21 @@
 import tensorflow as tf
 import numpy as np
 
+
 class FunctionApprox:
     def __init__(self):
+
+        # set random seed for reproducibility
+        tf.random.set_seed(7)
+        np.random.seed(7)
+
         # Create model
         self.model = tf.keras.Sequential()
 
         # Add layers
         self.model.add(tf.keras.layers.Dense(8,))
         self.model.add(tf.keras.layers.Dense(32, name="1"))
-        self.model.add(tf.keras.layers.Dense(32, name="2"))
+        self.model.add(tf.keras.layers.Dense(64, name="2"))
         self.model.add(tf.keras.layers.Dense(4, name="Output"))
 
         # Make Adam Optimizer
@@ -38,7 +44,7 @@ class FunctionApprox:
         """
         Load model by overwriting current trained model with keras.model object
         """
-        self.model = tf.keras.load_model(f"{filename}.h5")
+        self.model = tf.keras.models.load_model(f"{filename}.h5")
 
     def train(self, x, y, batch_size, epochs: int, verbose: bool):
         """
