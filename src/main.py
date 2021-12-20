@@ -46,11 +46,11 @@ def main(n_epi: int, steps: int, n_train: int, n_update: int, n_decay: int, deca
             env.render()
 
             # Train policy network
-            if count % n_train == 0:
+            if count % n_train == 0 and i_episode > 0:
                 agent.train()
 
             # Update target network
-            if count % n_update == 0 and i_episode > 1:
+            if count % n_update == 0 and i_episode > 0:
                 print(count)
                 agent.update_t_network()  # TODO: kan nog iets minder vak dan elke train
 
@@ -84,8 +84,14 @@ def main(n_epi: int, steps: int, n_train: int, n_update: int, n_decay: int, deca
     agent.target_network.save_network("target_network")
     env.close()
 
-    plt.plot(rewards)
-    plt.ylabel("reward over time")
+    plt.plot(list(avg_rewards))
+    plt.ylabel("Average reward over time")
+    plt.xlabel("Episode")
+    plt.show()
+
+    plt.plot(list(tot_rewards))
+    plt.ylabel("Total reward over time")
+    plt.xlabel("Episode")
     plt.show()
 
 # bron: https://medium.datadriveninvestor.com/training-the-lunar-lander-agent-with-deep-q-learning-and-its-variants-2f7ba63e822c
