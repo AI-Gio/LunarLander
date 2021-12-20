@@ -6,7 +6,7 @@ from EpsilonPolicy import Epsilon_policy
 
 class Agent:
     """
-    Agent does cool stuff
+
     """
     def __init__(self, discount, epsilon, tau, batch_size, epochs, memory_size, learning_rate):
         self.discount = discount
@@ -65,7 +65,7 @@ class Agent:
 
     def choose_action(self, state):
         """
-            Lets the agent do an action within the sim
+        Lets the agent do an action within the sim
         """
         best_action_index = self.pol.select_action(self.policy_network, self.epsilon, state)
         return best_action_index
