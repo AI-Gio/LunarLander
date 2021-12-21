@@ -20,7 +20,7 @@ class FunctionApprox:
 
         # Make Adam Optimizer
         adam = tf.keras.optimizers.Adam(learning_rate=0.001, name="Adam")
-        loss = tf.keras.losses.MeanSquaredError(name="mean_squared_error")  # TODO: fixed problem optimizer to loss
+        loss = tf.keras.losses.MeanSquaredError(name="mean_squared_error")
 
         # Compile model
         self.model.compile(optimizer=adam, loss=loss)
@@ -55,7 +55,7 @@ class FunctionApprox:
         :param epochs: how many epochs the model runs
         :param verbose: show training progress or not
         """
-        self.model.fit(x=x,y=y, batch_size=batch_size, epochs=epochs, verbose=verbose) # TODO: gebeurt nog iets raars met epochs dat hij er maar 1tje pakt
+        self.model.fit(x=x,y=y, batch_size=batch_size, epochs=epochs, verbose=verbose)
 
     def set_weights(self, weights: np.array):
         """
@@ -75,7 +75,7 @@ class FunctionApprox:
         layers = []
         for layer in self.model.layers:
             layers.append(layer.get_weights())
-        return np.array(layers)  # TODO wrong shape error fixed
+        return np.array(layers, dtype=object)
 
 
 
