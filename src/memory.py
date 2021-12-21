@@ -15,6 +15,8 @@ class Memory:
         :return: list of samples of transitions
         """
         samples = []
+        if len(self.mem) < batch_size:
+            batch_size = len(self.mem)
         for s in range(batch_size):
             samples.append(random.choice(self.mem))
         return samples

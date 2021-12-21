@@ -2,7 +2,7 @@ import numpy as np
 from memory import Memory
 from function_approx import FunctionApprox
 from EpsilonPolicy import Epsilon_policy
-
+import time
 
 class Agent:
     """
@@ -27,29 +27,26 @@ class Agent:
         :return:
         """
 
-        batch = self.memory.sample(self.batch_size) # lijst aan transitions
-        X = []
-        Y = []
-        for transition in batch:
-            state = x = transition.state
-            next_state = transition.next_state
+        batch = self.memory.sample(self.batch_size)  # lijst aan transitions
+        states = [transition.state for transition in batch]
+        next_states = [transition.next_state for transition in batch]
+        rewards = [transition.reward for transition in batch]
+        actions = [transition.action for transition in batch]
 
-            if transition.done:
-                q_val_next_state = [0, 0, 0, 0]
-            else:
-                q_val_next_state = self.policy_network.q_values(next_state)
+        done_indexes = [i for i, transition in enumerate(batch) if transition.done]
+        q_val_next_state = np.array(self.policy_network.q_values(next_states))
+        for i in done_indexes:
+            q_val_next_state[i] = [0, 0, 0, 0]
 
-            argmax_index = np.argmax(q_val_next_state)
-            target = transition.reward + self.discount * self.target_network.q_values(next_state)[argmax_index]
+        argmax_indeces = [np.argmax(q_val) for q_val in q_val_next_state]
 
-            y = self.policy_network.q_values(state)  # this is q_values current state
-            y[transition.action] = target
-
-            X.append(np.array(x))
-            Y.append(np.array(y))
-
-        X = np.array(X)
-        Y = np.array(Y)
+        q2 = np.array(self.target_network.q_values(next_states))
+        targets = rewards + self.discount * np.array([q_val[argmax_indeces[i]] for i, q_val in enumerate(q2)])
+        y = self.policy_network.q_values(states)
+        for i, q_val in enumerate(y):
+            q_val[actions[i]] = targets[i]
+        Y = np.array(y)
+        X = np.array(states)
 
         self.policy_network.train(X, Y, self.batch_size, self.epochs, True)  # TODO: wrong input fixed
 

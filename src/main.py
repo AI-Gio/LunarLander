@@ -2,7 +2,9 @@ import gym
 import agent, transition  # , memory, function_approx
 import numpy as np
 import matplotlib.pyplot as plt
+import os
 env = gym.make('LunarLander-v2')
+os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
 np.random.seed(7)
 
 
@@ -71,20 +73,20 @@ def main(n_epi: int, steps: int, n_train: int, n_update: int, n_decay: int, deca
                 print("Episode finished after {} timesteps".format(step + 1))
                 break
 
-    agent.policy_network.save_network("policy_network")
-    agent.target_network.save_network("target_network")
+    # agent.policy_network.save_network("policy_network")
+    # agent.target_network.save_network("target_network")
     env.close()
 
     plt.plot(rewards)
     plt.ylabel("reward over time")
     plt.show()
 
-# bron: https://medium.datadriveninvestor.com/training-the-lunar-lander-agent-with-deep-q-learning-and-its-variants-2f7ba63e822c
 
+# bron: https://medium.datadriveninvestor.com/training-the-lunar-lander-agent-with-deep-q-learning-and-its-variants-2f7ba63e822c
 epsilon, discount = [0.5, 0.9]  # begin epsilon: 0.5
 epochs, batch_size, learning_rate, tau = [1, 64, 0.001, 0.7]
 memory_size = 10000
 
 agent = agent.Agent(discount=discount, epsilon=epsilon, tau=tau, batch_size=batch_size,
                     epochs=epochs, memory_size=memory_size, learning_rate=learning_rate)
-main(n_epi=800, steps=300, n_train=75, n_update=20, n_decay=1, decay_r=0.995, load_m=False)
+main(n_epi=400, steps=300, n_train=75, n_update=20, n_decay=1, decay_r=0.995, load_m=False)
