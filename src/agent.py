@@ -20,7 +20,7 @@ class Agent:
         self.pol = Epsilon_policy([0, 1, 2, 3])
         self.memory = Memory(memory_size)
 
-    def train(self):
+    def train_efficient(self):
         """
         This train function has to calculate y first and then give params
         to function_approx.train()
@@ -47,6 +47,38 @@ class Agent:
             q_val[actions[i]] = targets[i]
         Y = np.array(y)
         X = np.array(states)
+
+        self.policy_network.train(X, Y, self.batch_size, self.epochs, True)
+
+    def train(self):
+        """
+        This train function has to calculate y first and then give params
+        to function_approx.train()
+        :return:
+        """
+        batch = self.memory.sample(self.batch_size) # lijst aan transitions
+        X = []
+        Y = []
+        for transition in batch:
+            state = x = transition.state
+            next_state = transition.next_state
+
+            if transition.done:
+                q_val_next_state = [0, 0, 0, 0]
+            else:
+                q_val_next_state = self.policy_network.q_values(next_state)
+
+            argmax_index = np.argmax(q_val_next_state)
+            target = transition.reward + self.discount * self.target_network.q_values(next_state)[argmax_index]
+
+            y = self.policy_network.q_values(state)  # this is q_values current state
+            y[transition.action] = target
+
+            X.append(np.array(x))
+            Y.append(np.array(y))
+
+        X = np.array(X)
+        Y = np.array(Y)
 
         self.policy_network.train(X, Y, self.batch_size, self.epochs, True)  # TODO: wrong input fixed
 

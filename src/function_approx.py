@@ -4,7 +4,6 @@ import numpy as np
 
 class FunctionApprox:
     def __init__(self):
-
         # set random seed for reproducibility
         tf.random.set_seed(7)
         np.random.seed(7)
@@ -55,7 +54,7 @@ class FunctionApprox:
         :param epochs: how many epochs the model runs
         :param verbose: show training progress or not
         """
-        self.model.fit(x=x,y=y, batch_size=batch_size, epochs=epochs, verbose=verbose)
+        self.model.fit(x=x, y=y, batch_size=batch_size, epochs=epochs, verbose=verbose)
 
     def set_weights(self, weights: np.array):
         """
@@ -76,6 +75,5 @@ class FunctionApprox:
         for layer in self.model.layers:
             layers.append(layer.get_weights())
         return np.array(layers, dtype=object)
-
 
 

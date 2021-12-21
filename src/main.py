@@ -2,6 +2,7 @@ import gym
 import agent, transition
 import numpy as np
 import matplotlib.pyplot as plt
+
 import os
 env = gym.make('LunarLander-v2')
 os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
@@ -28,17 +29,16 @@ def main(n_epi: int, steps: int, n_train: int, n_update: int, n_decay: int, deca
         agent.target_network.load_network("target_network")
 
     for i_episode in range(n_epi):
-        current_state = env.reset()
         print(f"n episodes: {i_episode}")
         current_state = env.reset()
         avg_reward = []
         tot_reward = 0
 
         # Safe network after 25 episodes
-        if i_episode % 25 == 0 and i_episode > 1:
-            print("Saved networks")
-            agent.policy_network.save_network("policy_network")
-            agent.target_network.save_network("target_network")
+        # if i_episode % 25 == 0 and i_episode > 1:
+        #     print("Saved networks")
+        #     agent.policy_network.save_network("policy_network")
+        #     agent.target_network.save_network("target_network")
 
         # Epsilon decay
         if i_episode % n_decay == 0:
@@ -50,7 +50,7 @@ def main(n_epi: int, steps: int, n_train: int, n_update: int, n_decay: int, deca
 
             # Train policy network
             if count % n_train == 0 and i_episode > 0:
-                agent.train()
+                agent.train_efficient()
 
             # Update target network
             if count % n_update == 0 and i_episode > 0:
@@ -103,8 +103,8 @@ def main(n_epi: int, steps: int, n_train: int, n_update: int, n_decay: int, deca
 load_m = False
 
 if not load_m:
-    epsilon, discount = [0.5, 0.99]  # begin epsilon: 0.5
-    epochs, batch_size, learning_rate, tau = [1, 64, 0.01, 0.7]
+    epsilon, discount = [0.5, 0.9]  # begin epsilon: 0.5
+    epochs, batch_size, learning_rate, tau = [1, 64, 0.001, 0.7]
     memory_size = 10000
     agent = agent.Agent(discount=discount, epsilon=epsilon, tau=tau, batch_size=batch_size,
                         epochs=epochs, memory_size=memory_size, learning_rate=learning_rate)
