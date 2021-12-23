@@ -2,7 +2,11 @@ import numpy as np
 from memory import Memory
 from function_approx import FunctionApprox
 from EpsilonPolicy import Epsilon_policy
-import time
+# todo: better var names
+# todo: descriptions
+# todo: maybe make train more efficient
+# todo: add comments
+
 
 class Agent:
     """
@@ -17,7 +21,7 @@ class Agent:
         self.learning_rate = learning_rate
         self.policy_network = FunctionApprox()
         self.target_network = FunctionApprox()
-        self.pol = Epsilon_policy([0, 1, 2, 3])
+        self.pol = Epsilon_policy()
         self.memory = Memory(memory_size)
 
     def train_efficient(self):
@@ -27,28 +31,31 @@ class Agent:
         :return:
         """
 
-        batch = self.memory.sample(self.batch_size)  # lijst aan transitions
+        batch = self.memory.sample(self.batch_size)  # list of transitions
+
         states = [transition.state for transition in batch]
         next_states = [transition.next_state for transition in batch]
         rewards = [transition.reward for transition in batch]
         actions = [transition.action for transition in batch]
-
         done_indexes = [i for i, transition in enumerate(batch) if transition.done]
-        q_val_next_state = np.array(self.policy_network.q_values(next_states))
+
+        # get q_values of all next states (0 if end state)
+        q_val_policy = self.policy_network.q_values(next_states)
         for i in done_indexes:
-            q_val_next_state[i] = [0, 0, 0, 0]
+            q_val_policy[i] = [0, 0, 0, 0]
 
-        argmax_indeces = [np.argmax(q_val) for q_val in q_val_next_state]
+        # Calculate target
+        argmax_indices = [np.argmax(q_val) for q_val in q_val_policy]
+        q_val_target = self.target_network.q_values(next_states)
+        targets = rewards + self.discount * np.array([q_val[argmax_indices[i]] for i, q_val in enumerate(q_val_target)])
 
-        q2 = np.array(self.target_network.q_values(next_states))
-        targets = rewards + self.discount * np.array([q_val[argmax_indeces[i]] for i, q_val in enumerate(q2)])
-        y = self.policy_network.q_values(states)
-        for i, q_val in enumerate(y):
+        # calculate current state q_values and replace action q_value with target value
+        Y = self.policy_network.q_values(states)
+        for i, q_val in enumerate(Y):
             q_val[actions[i]] = targets[i]
-        Y = np.array(y)
         X = np.array(states)
 
-        self.policy_network.train(X, Y, self.batch_size, self.epochs, True)
+        self.policy_network.train(X, Y, self.batch_size, self.epochs, False)
 
     def train(self):
         """
@@ -56,7 +63,7 @@ class Agent:
         to function_approx.train()
         :return:
         """
-        batch = self.memory.sample(self.batch_size) # lijst aan transitions
+        batch = self.memory.sample(self.batch_size)  # list of transitions
         X = []
         Y = []
         for transition in batch:
@@ -80,7 +87,7 @@ class Agent:
         X = np.array(X)
         Y = np.array(Y)
 
-        self.policy_network.train(X, Y, self.batch_size, self.epochs, True)  # TODO: wrong input fixed
+        self.policy_network.train(X, Y, self.batch_size, self.epochs, False)  # TODO: wrong input fixed
 
     def update_t_network(self):
         """
@@ -98,8 +105,3 @@ class Agent:
         """
         best_action_index = self.pol.select_action(self.policy_network, self.epsilon, state)
         return best_action_index
-
-
-
-
-

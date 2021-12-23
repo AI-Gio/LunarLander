@@ -1,21 +1,23 @@
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
+from keras.models import Sequential
+from keras.layers import Dense
 import numpy as np
+import warnings
+tf.disable_v2_behavior()
+warnings.filterwarnings("ignore", category=UserWarning)
 
 
 class FunctionApprox:
     def __init__(self):
-        # set random seed for reproducibility
-        tf.random.set_seed(7)
-        np.random.seed(7)
 
         # Create model
-        self.model = tf.keras.Sequential()
+        self.model = Sequential()
 
         # Add layers
-        self.model.add(tf.keras.layers.Dense(8,))
-        self.model.add(tf.keras.layers.Dense(32, name="1"))
-        self.model.add(tf.keras.layers.Dense(64, name="2"))
-        self.model.add(tf.keras.layers.Dense(4, name="Output"))
+        self.model.add(Dense(input_dim=8, units=1))
+        self.model.add(Dense(32, name="1"))
+        self.model.add(Dense(64, name="2"))
+        self.model.add(Dense(4, name="Output"))
 
         # Make Adam Optimizer
         adam = tf.keras.optimizers.Adam(learning_rate=0.001, name="Adam")
@@ -30,8 +32,8 @@ class FunctionApprox:
         :param states:
         :return: np.array() of predictions
         """
-        preds = self.model.predict(np.array([np.array(states)]))[0]
-        return preds
+        predictions = self.model.predict(np.array(states))
+        return predictions
 
     def save_network(self, filename):
         """
@@ -58,9 +60,8 @@ class FunctionApprox:
 
     def set_weights(self, weights: np.array):
         """
-        Set the weights of the model
+        Set the weights of the model layer by layer
         :param weights: all weights of model
-        :param layer: integer that corresponds to what layer in the model the weights should be changed
         """
         layers = self.model.layers
         for i, lw in enumerate(layers):
@@ -68,12 +69,10 @@ class FunctionApprox:
 
     def get_weights(self):
         """
-        Get weigths from layers in model
-        :return: 2d np.array with np.arrays
+        Get all weights from each layers in model
+        :return: 2d numpy matrix containing all the weights
         """
         layers = []
         for layer in self.model.layers:
             layers.append(layer.get_weights())
         return np.array(layers, dtype=object)
-
-
