@@ -1,9 +1,11 @@
 import random
+import numpy as np
 from function_approx import FunctionApprox
 
 
 class Epsilon_policy:
-    """The epsilon soft policy of the agent."""
+    """The epsilon greedy policy of the agent. Gives an actions based
+    on the best q-values of the network. Has 1-epsilon chance of giving a random action"""
     def __init__(self):
         self.actions = [0, 1, 2, 3]
 
@@ -11,7 +13,7 @@ class Epsilon_policy:
         """Select an action through the given neural network"""
 
         if random.random() > epsilon:
-            Q_values = list(network.q_values(state))
+            Q_values = network.q_values(state)[0]
             best_q_value = max(Q_values)
-            return Q_values.index(best_q_value)
+            return np.where(Q_values == best_q_value)[0][0]  # [0][0] to index the first best item
         return random.choice(self.actions)

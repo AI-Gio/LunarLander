@@ -8,6 +8,11 @@ warnings.filterwarnings("ignore", category=UserWarning)
 
 
 class FunctionApprox:
+    """
+    The network class of the simulation. Used as to create a policy network instance and a
+    target network instance. Contains an artificial neural network from the keras library.
+    The output of the neural network is a list of q-values representative of each possible action.
+    """
     def __init__(self):
 
         # Create model
@@ -26,9 +31,10 @@ class FunctionApprox:
         # Compile model
         self.model.compile(optimizer=adam, loss=loss)
 
-    def q_values(self, states: list):
+    def q_values(self, states: list) -> np.array:
         """
-        Feeds list of states in model to predict.
+        Feeds list of states in model to predict and gives a list of
+        Q-values, one for each action, in return.
         :param states:
         :return: np.array() of predictions
         """
@@ -37,13 +43,13 @@ class FunctionApprox:
 
     def save_network(self, filename):
         """
-        Save model
+        Save the model at [filename]
         """
         self.model.save(f"{filename}.h5")
 
     def load_network(self, filename):
         """
-        Load model by overwriting current trained model with keras.model object
+        Load model by overwriting current model with keras.model object
         """
         self.model = tf.keras.models.load_model(f"{filename}.h5")
 
@@ -54,7 +60,7 @@ class FunctionApprox:
         :param y: set with labels
         :param batch_size: how much of the data should be used to train on
         :param epochs: how many epochs the model runs
-        :param verbose: show training progress or not
+        :param verbose: show training progress bar or not
         """
         self.model.fit(x=x, y=y, batch_size=batch_size, epochs=epochs, verbose=verbose)
 
