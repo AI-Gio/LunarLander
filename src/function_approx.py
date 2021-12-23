@@ -13,7 +13,7 @@ class FunctionApprox:
     target network instance. Contains an artificial neural network from the keras library.
     The output of the neural network is a list of q-values representative of each possible action.
     """
-    def __init__(self):
+    def __init__(self, learning_rate: float):
 
         # Create model
         self.model = Sequential()
@@ -25,7 +25,7 @@ class FunctionApprox:
         self.model.add(Dense(4, name="Output"))
 
         # Make Adam Optimizer
-        adam = tf.keras.optimizers.Adam(learning_rate=0.001, name="Adam")
+        adam = tf.keras.optimizers.Adam(learning_rate=learning_rate, name="Adam")
         loss = tf.keras.losses.MeanSquaredError(name="mean_squared_error")
 
         # Compile model

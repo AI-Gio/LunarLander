@@ -16,9 +16,8 @@ class Agent:
         self.tau = tau
         self.batch_size = batch_size
         self.epochs = epochs
-        self.learning_rate = learning_rate
-        self.policy_network = FunctionApprox()
-        self.target_network = FunctionApprox()
+        self.policy_network = FunctionApprox(learning_rate)
+        self.target_network = FunctionApprox(learning_rate)
         self.pol = Epsilon_policy()
         self.memory = Memory(memory_size)
 
